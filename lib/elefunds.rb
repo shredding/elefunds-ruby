@@ -69,12 +69,11 @@ class ElefundsFacade
     @client_id, @api_key, @country_code, @configuration = client_id, api_key, country_code, configuration
 
     @hashed_key = calculate_hashed_key
-    @rest = initialize_request
+    @rest = set_request
     @cached_receivers = []
 
-    if @configuration.has_key? 'User-Agent'
-      @rest.set_header 'User-Agent', configuration['User-Agent']
-    end
+    initialize_configuration
+
   end
 
   def receivers(force_reload = false)
@@ -150,18 +149,24 @@ class ElefundsFacade
       Digest::SHA1.hexdigest client_id.to_s + api_key
     end
 
-    def initialize_request(request = RestRequest.new)
+    def set_request(request = RestRequest.new)
       RestRequest.new
     end
 
-    def extract_foreign_ids(donation)
-      if donation.is_a? Hash
-        donation['foreign_id']
-      elsif donation.is_a? String
-        donation
-      else
-        raise Exceptions::ElefundsException, 'Given array must contain either donation hashes or foreign ids.'
+    def initialize_configuration
+      if @configuration.has_key? 'User-Agent'
+        @rest.set_header 'User-Agent', configuration['User-Agent']
       end
     end
+
+    def extract_foreign_ids(donation)
+        if donation.is_a? Hash
+          donation['foreign_id']
+        elsif donation.is_a? String
+          donation
+        else
+          raise Exceptions::ElefundsException, 'Given array must contain either donation hashes or foreign ids.'
+        end
+      end
 
 end
