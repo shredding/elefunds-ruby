@@ -65,21 +65,21 @@ class ElefundsFacade
   attr_accessor :country_code
   attr_accessor :configuration
 
-  def initialize(client_id, api_key, country_code = 'de', configuration = {})
+  def initialize(client_id, api_key, country_code = 'de')
     @client_id, @api_key, @country_code, @configuration = client_id, api_key, country_code, configuration
 
     @hashed_key = calculate_hashed_key
     @rest = set_request
     @cached_receivers = []
+  end
 
-    initialize_configuration
-
+  def set_user_agent(user_agent)
+    @rest.set_header 'User-Agent', user_agent
   end
 
   def receivers(force_reload = false)
-    if @cached_receivers.length > 0 && force_reload
-      return @cached_receivers
-    end
+
+    return @cached_receivers unless force_reload && @cached_receivers.length > 0
 
     response = @rest.get RestRequest::API_URL + "/receivers/for/#{@client_id}"
 
@@ -99,23 +99,7 @@ class ElefundsFacade
 
   # Adds multiple donations to the API
   def add_donations(donations)
-    donations.collect! do |donation|
-      donation.inject({}) do | prepared_donation, (key, value)|
-
-        value = value.iso8601 if value.is_a? DateTime
-
-        if value.is_a? Hash
-          value = value.inject({}) do |data, (inner_key, inner_value)|
-            data[inner_key.to_s.lower_camelcase] = inner_value
-            data
-          end
-        end
-
-        prepared_donation[key.to_s.lower_camelcase] = value
-        prepared_donation
-      end
-    end
-
+    donations = make_donations_api_compatible donations
     @rest.post RestRequest::API_URL + "/donations/?clientId=#{@client_id}&hashedKey=#{@hashed_key}", donations
   end
 
@@ -150,12 +134,27 @@ class ElefundsFacade
     end
 
     def set_request(request = RestRequest.new)
-      RestRequest.new
+      request
     end
 
-    def initialize_configuration
-      if @configuration.has_key? 'User-Agent'
-        @rest.set_header 'User-Agent', configuration['User-Agent']
+    # The api standard is camelCase instead of snake_case
+    # We do as well normalize some data like DateTime to iso8601 string!
+    def make_donations_api_compatible(donations)
+      donations.collect! do |donation|
+        donation.inject({}) do | prepared_donation, (key, value)|
+
+          value = value.iso8601 if value.is_a? DateTime
+
+          if value.is_a? Hash
+            value = value.inject({}) do |data, (inner_key, inner_value)|
+              data[inner_key.to_s.lower_camel_case] = inner_value
+              data
+            end
+          end
+
+          prepared_donation[key.to_s.lower_camel_case] = value
+          prepared_donation
+        end
       end
     end
 
@@ -164,9 +163,6 @@ class ElefundsFacade
           donation['foreign_id']
         elsif donation.is_a? String
           donation
-        else
-          raise Exceptions::ElefundsException, 'Given array must contain either donation hashes or foreign ids.'
         end
-      end
-
+    end
 end
