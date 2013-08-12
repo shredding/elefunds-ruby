@@ -66,20 +66,14 @@ class ElefundsFacade
   attr_accessor :configuration
 
   def initialize(client_id, api_key, country_code = 'de')
-    @client_id, @api_key, @country_code, @configuration = client_id, api_key, country_code, configuration
-
-    @hashed_key = calculate_hashed_key
-    @rest = set_request
+    @client_id, @api_key, @country_code = client_id, api_key, country_code
     @cached_receivers = []
-  end
-
-  def set_user_agent(user_agent)
-    @rest.set_header 'User-Agent', user_agent
+    @hashed_key = calculate_hashed_key
+    @rest = set_rest_request
   end
 
   def receivers(force_reload = false)
-
-    return @cached_receivers unless force_reload && @cached_receivers.length > 0
+    return @cached_receivers if force_reload && @cached_receivers.length == 0
 
     response = @rest.get RestRequest::API_URL + "/receivers/for/#{@client_id}"
 
@@ -97,14 +91,12 @@ class ElefundsFacade
     add_donations [donation]
   end
 
-  # Adds multiple donations to the API
   def add_donations(donations)
     donations = make_donations_api_compatible donations
     @rest.post RestRequest::API_URL + "/donations/?clientId=#{@client_id}&hashedKey=#{@hashed_key}", donations
   end
 
   # Shortcut for cancelling a single donation
-  # Accepts foreign ids or full blown donation hashes
   def cancel_donation(donation)
     cancel_donations [donation]
   end
@@ -116,7 +108,6 @@ class ElefundsFacade
   end
 
   # Shortcut for completing a single donation
-  # Accepts foreign ids or full blown donation hashes
   def complete_donation(donation)
     complete_donations [donation]
   end
@@ -127,14 +118,19 @@ class ElefundsFacade
     @rest.put RestRequest::API_URL + "/donations/#{donations.join(',')}/?clientId=#{@client_id}&hashedKey=#{@hashed_key}"
   end
 
+  def set_rest_request(request = RestRequest.new)
+    @rest = request
+    @rest.set_header 'User-Agent', "elefunds-ruby #{Elefunds::VERSION}"
+  end
+
+  def set_user_agent(user_agent)
+    @rest.set_header 'User-Agent', user_agent
+  end
+
   protected
 
     def calculate_hashed_key
       Digest::SHA1.hexdigest client_id.to_s + api_key
-    end
-
-    def set_request(request = RestRequest.new)
-      request
     end
 
     # The api standard is camelCase instead of snake_case
