@@ -156,7 +156,7 @@ class ElefundsFacade
 
     def extract_foreign_ids(donation)
         if donation.is_a? Hash
-          donation['foreign_id']
+          donation[:foreign_id]
         elsif donation.is_a? String
           donation
         end
