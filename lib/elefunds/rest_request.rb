@@ -7,7 +7,7 @@ require_relative 'version'
 
 class RestRequest
 
-  API_URL = 'http://connect.elefunds.de'
+  API_URL = 'http://elefunds-api-staging.herokuapp.com'
 
   def initialize
     @headers = {
@@ -17,19 +17,19 @@ class RestRequest
   end
 
   def get(url)
-    process_response HTTParty.get url, header: @headers
+    process_response HTTParty.get url, headers: @headers
   end
 
   def post(url, data)
-    process_response HTTParty.post url, body: data.to_json, header: @headers
+    process_response HTTParty.post url, body: data.to_json, headers: @headers
   end
 
   def put(url, data = '')
-    process_response HTTParty.put url, body: data.to_json, header: @headers
+    process_response HTTParty.put url, body: data.to_json, headers: @headers
   end
 
   def delete(url)
-    process_response HTTParty.delete url, header: @headers
+    process_response HTTParty.delete url, headers: @headers
   end
 
   def set_header(header, data)
@@ -40,7 +40,7 @@ class RestRequest
     def process_response(response)
 
       if response.code != 200
-        raise Exceptions::ElefundsCommunicationException, "An error (#{response.code} occured: #{response.message}."
+        raise Exceptions::ElefundsCommunicationException, "An error (#{response.code} occurred: #{response.message}."
       end
 
       JSON.parse(response.body)

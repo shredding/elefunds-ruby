@@ -121,6 +121,7 @@ class ElefundsFacade
   def set_rest_request(request = RestRequest.new)
     @rest = request
     @rest.set_header 'User-Agent', "elefunds-ruby #{Elefunds::VERSION}"
+    @rest
   end
 
   def set_user_agent(user_agent)
