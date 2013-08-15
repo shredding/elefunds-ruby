@@ -7,7 +7,7 @@ require_relative 'version'
 
 class RestRequest
 
-  API_URL = 'http://elefunds-api-staging.herokuapp.com'
+  API_URL = 'http://connect.elefunds.de'
 
   def initialize
     @headers = {

@@ -7,30 +7,40 @@ describe ElefundsFacade do
 
   before :each do
     @elefunds = ElefundsFacade.new 1001, 'ay3456789gg234561234'
-    @fake_receivers = {
-      'receivers' => {
-          'de' => 'foo'
-      }
+    @fake_request = double set_header: nil
+  end
+
+  let :fake_receivers do
+    {
+        'receivers' => {
+            'de' => 'foo'
+        }
     }
-    @fake_donation = {
-      foreign_id:           'AB12345',
-      donation_timestamp:   DateTime.new(2013, 1, 1),
-      donation_amount:      300,
-      receivers:            [1,2],
-      receivers_available:  [1,2,3],
-      grand_total:          900,
-      suggested_amount:     100,
-      donator: {
-          first_name:           'Christian',
-          last_name:            'Peters',
-          email:                'christian@elefunds.de',
-          street_address:       'Schönhauser Allee 124',
-          zip:                  '10234',
-          city:                 'Berlin',
-          country_code:         'de'
-      }
+  end
+
+  let :fake_donation do
+    {
+        foreign_id:           'AB12345',
+        donation_timestamp:   DateTime.new(2013, 1, 1),
+        donation_amount:      300,
+        receivers:            [1,2],
+        receivers_available:  [1,2,3],
+        grand_total:          900,
+        suggested_amount:     100,
+        donator: {
+            first_name:           'Christian',
+            last_name:            'Peters',
+            email:                'christian@elefunds.de',
+            street_address:       'Schönhauser Allee 124',
+            zip:                  '10234',
+            city:                 'Berlin',
+            country_code:         'de'
+        }
     }
-    @api_compatible_donations = [
+  end
+
+  let :api_compatible_donations do
+      [
         {
             'foreignId'          => 'AB12345',
             'donationTimestamp'  => '2013-01-01T00:00:00+00:00',
@@ -50,9 +60,8 @@ describe ElefundsFacade do
             }
         }
     ]
-
-    @fake_request = double set_header: nil
   end
+
 
   it 'should create a hashed key from given client_id and api_key' do
     hashed_key = @elefunds.send :calculate_hashed_key
@@ -66,7 +75,7 @@ describe ElefundsFacade do
 
   it 'should return a set of receivers' do
     @elefunds.set_rest_request @fake_request
-    @fake_request.should_receive(:get).with('http://connect.elefunds.de/receivers/for/1001').and_return(@fake_receivers)
+    @fake_request.should_receive(:get).with('http://connect.elefunds.de/receivers/for/1001').and_return(fake_receivers)
     receivers  = @elefunds.receivers
     receivers.should eql 'foo'
   end
@@ -80,7 +89,7 @@ describe ElefundsFacade do
   it 'should raise an elefunds exception if country code is not given' do
     elefunds = ElefundsFacade.new 1001, 'ay3456789gg234561234', 'en'
 
-    @fake_request.should_receive(:get).and_return(@fake_receivers)
+    @fake_request.should_receive(:get).and_return(fake_receivers)
     elefunds.set_rest_request @fake_request
 
     expect { elefunds.receivers }.to raise_exception Exceptions::ElefundsException
@@ -89,17 +98,17 @@ describe ElefundsFacade do
   it 'should send an api compatible JSON to the API' do
     api_url = 'http://connect.elefunds.de/donations/?clientId=1001&hashedKey=eb85fa24f23b7ade5224a036b39556d65e764653'
 
-    @fake_request.should_receive(:post).with(api_url, @api_compatible_donations)
+    @fake_request.should_receive(:post).with(api_url, api_compatible_donations)
     @elefunds.set_rest_request @fake_request
-    @elefunds.add_donation @fake_donation
+    @elefunds.add_donation fake_donation
   end
 
   it 'should accept iso string as donation timestamp' do
     @fake_request.should_receive(:post)
-    @fake_donation[:donator][:donation_timestamp] = '2013-01-01T00:00:00+00:00'
+    fake_donation[:donator][:donation_timestamp] = '2013-01-01T00:00:00+00:00'
 
     @elefunds.set_rest_request @fake_request
-    @elefunds.add_donation @fake_donation
+    @elefunds.add_donation fake_donation
   end
 
   it 'should send a delete request to the API when a donation is cancelled' do
@@ -113,7 +122,7 @@ describe ElefundsFacade do
     api_url = 'http://connect.elefunds.de/donations/AB12345/?clientId=1001&hashedKey=eb85fa24f23b7ade5224a036b39556d65e764653'
     @fake_request.should_receive(:delete).with(api_url)
     @elefunds.set_rest_request @fake_request
-    @elefunds.cancel_donation @fake_donation
+    @elefunds.cancel_donation fake_donation
   end
 
   it 'should send a put request to the API when a donation is completed' do
@@ -127,7 +136,7 @@ describe ElefundsFacade do
     api_url = 'http://connect.elefunds.de/donations/AB12345/?clientId=1001&hashedKey=eb85fa24f23b7ade5224a036b39556d65e764653'
     @fake_request.should_receive(:put).with(api_url)
     @elefunds.set_rest_request @fake_request
-    @elefunds.complete_donation @fake_donation
+    @elefunds.complete_donation fake_donation
   end
 
   it 'should provide a shortcut method for setting the user agent on the rest request instance' do
