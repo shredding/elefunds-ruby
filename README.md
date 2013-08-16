@@ -46,7 +46,7 @@ Receivers are returned as an array of hashes:
 }]
 ```
 
-Donations are expected as hashes, as well
+Donations are expected as hashes, as well:
 
 ```ruby
 {
@@ -60,7 +60,7 @@ Donations are expected as hashes, as well
 }
 ```
 
-If you want, you can add a 'donator' as key to the donations and we will send him a donation receipt!
+If you want, you can add a *donator* as key to the donations and we will send him a donation receipt!
 The donator itself must be a hash like this:
 
 ```ruby
