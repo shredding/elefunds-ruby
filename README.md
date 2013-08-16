@@ -1,4 +1,4 @@
-# Elefunds
+# elefunds-ruby
 
 The elefunds gem is a ruby wrapper to work with the elefunds API.
 
