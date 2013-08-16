@@ -63,6 +63,5 @@ describe RestRequest do
 
   it 'raises elefunds communication exception if response code is different than 200' do
     expect { @rest.send(:process_response, invalid_response) }.to raise_exception Exceptions::ElefundsCommunicationException
-
   end
 end
