@@ -8,7 +8,7 @@ If you need additional information or have a question, please feel free
 to write to christian@elefunds.de
 
 If you only want to do some test, please use a test client account,
-such as 1001 / ay3456789gg234561234
+such as `1001` / `ay3456789gg234561234`
 
 ## Installation
 
