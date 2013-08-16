@@ -50,13 +50,13 @@ Donations are expected as hashes, as well:
 
 ```ruby
 {
-    foreign_id:           'AB12345',              # a unique id per donation, e.g. the order id in a shop
-    donation_timestamp:   DateTime.now,           # you can as well pass an iso8601 compatible string
-    donation_amount:      300,                    # donation amount in cent
-    receivers:            [1,2],                  # receiver IDs of the selected receivers
-    receivers_available:  [1,2,3],                # all receivers that were available to the user
-    grand_total:          900,                    # the grand total prior to the donation (optional)
-    suggested_amount:     100                     # the amount that was suggested to the user
+    foreign_id:           'AB12345',      # a unique id per donation, e.g. the order id in a shop
+    donation_timestamp:   DateTime.now,   # you can as well pass an iso8601 compatible string
+    donation_amount:      300,            # donation amount in cent
+    receivers:            [1,2],          # receiver IDs of the selected receivers
+    receivers_available:  [1,2,3],        # all receivers that were available to the user
+    grand_total:          900,            # the grand total prior to the donation (optional)
+    suggested_amount:     100             # the amount that was suggested to the user
 }
 ```
 
