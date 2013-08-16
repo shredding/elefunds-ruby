@@ -42,7 +42,7 @@ class RestRequest
     def process_response(response)
 
       if response.code != 200
-        raise ElefundsCommunicationException, "An error (#{response.code} occurred: #{response.message}."
+        raise ElefundsCommunicationException, "An error (#{response.code}) occurred: #{response.message}."
       end
 
       JSON.parse(response.body)

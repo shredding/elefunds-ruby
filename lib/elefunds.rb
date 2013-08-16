@@ -87,7 +87,7 @@ class ElefundsFacade
     # We do as well normalize some data like DateTime to iso8601 string!
     def make_donations_api_compatible(donations)
       donations.collect! do |donation|
-        donation.inject({}) do | prepared_donation, (key, value)|
+        donation.inject({}) do |prepared_donation, (key, value)|
 
           value = value.iso8601 if value.is_a? DateTime
 
