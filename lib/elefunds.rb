@@ -60,6 +60,8 @@ require_relative 'patches/string'
 
 class ElefundsFacade
 
+  include Exceptions
+
   attr_accessor :client_id
   attr_accessor :api_key
   attr_accessor :country_code
@@ -80,7 +82,7 @@ class ElefundsFacade
     if response['receivers'].has_key? @country_code
       @cached_receivers = response['receivers'][@country_code]
     else
-      raise Exceptions::ElefundsException, "Country code #{@country_code} is not registered for given client."
+      raise ElefundsException, "Country code #{@country_code} is not registered for given client."
     end
 
     @cached_receivers
