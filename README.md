@@ -7,7 +7,7 @@ It is at experimental stage and therefore not *yet* an official elefunds bundle.
 If you need additional information or have a question, please feel free
 to write to christian@elefunds.de
 
-If you only want to do some test, please use a test client account,
+If you only want to do some tests, please use a test client account,
 such as `1001` / `ay3456789gg234561234`
 
 ## Installation
