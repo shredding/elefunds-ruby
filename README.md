@@ -30,8 +30,7 @@ Using the API is easy:
 
 ```ruby
 ElefundsFacade.new 1001, 'ay3456789gg234561234' do |api|
-# Add a donation to the api!
-api << {
+  api << {
            foreign_id:           'AB12345',
            donation_timestamp:   DateTime.now,
            donation_amount:      300,
