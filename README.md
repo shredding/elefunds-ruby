@@ -26,7 +26,7 @@ Or install it yourself as:
 
 ## Usage
 
-Using the API is easy:
+Getting started is straightforward:
 
 ```ruby
 ElefundsFacade.new 1001, 'ay3456789gg234561234' do |api|
