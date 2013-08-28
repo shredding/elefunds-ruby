@@ -62,7 +62,6 @@ describe ElefundsFacade do
     ]
   end
 
-
   it 'creates a hashed key from given client_id and api_key' do
     hashed_key = @elefunds.send :calculate_hashed_key
     hashed_key.should eql 'eb85fa24f23b7ade5224a036b39556d65e764653'
@@ -101,6 +100,14 @@ describe ElefundsFacade do
     @fake_request.should_receive(:post).with(api_url, api_compatible_donations)
     @elefunds.set_rest_request @fake_request
     @elefunds.add_donation fake_donation
+  end
+
+  it 'sends an api compatible JSON to the API on << overload' do
+    api_url = 'http://connect.elefunds.de/donations/?clientId=1001&hashedKey=eb85fa24f23b7ade5224a036b39556d65e764653'
+
+    @fake_request.should_receive(:post).with(api_url, api_compatible_donations)
+    @elefunds.set_rest_request @fake_request
+    @elefunds << fake_donation
   end
 
   it 'accepts an iso string as donation timestamp' do

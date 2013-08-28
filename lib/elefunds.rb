@@ -19,6 +19,8 @@ class ElefundsFacade
     @cached_receivers = []
     @hashed_key = calculate_hashed_key
     @rest = set_rest_request
+
+    yield self if block_given?
   end
 
   def receivers(force_reload = false)
@@ -35,7 +37,10 @@ class ElefundsFacade
     @cached_receivers
   end
 
-  # Shortcut for adding a single donation
+  def <<(donation)
+    add_donation(donation)
+  end
+
   def add_donation(donation)
     add_donations [donation]
   end
@@ -45,7 +50,6 @@ class ElefundsFacade
     @rest.post RestRequest::API_URL + "/donations/?clientId=#{@client_id}&hashedKey=#{@hashed_key}", donations
   end
 
-  # Shortcut for cancelling a single donation
   def cancel_donation(donation)
     cancel_donations [donation]
   end

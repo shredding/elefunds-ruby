@@ -26,7 +26,24 @@ Or install it yourself as:
 
 ## Usage
 
-Receivers are returned as an array of hashes:
+Using the API is easy:
+
+```ruby
+ElefundsFacade.new 1001, 'ay3456789gg234561234' do |api|
+# Add a donation to the api!
+api << {
+           foreign_id:           'AB12345',
+           donation_timestamp:   DateTime.now,
+           donation_amount:      300,
+           receivers:            [1,2],
+           receivers_available:  [1,2,3],
+           grand_total:          900,
+           suggested_amount:     100
+       }
+end
+```
+
+> Receivers are returned as an array of hashes:
 
 ```ruby
 [{"name" => "Beispiel 01",
@@ -46,7 +63,7 @@ Receivers are returned as an array of hashes:
 }]
 ```
 
-Donations are expected as hashes, as well:
+> Donations are expected as hashes, as well:
 
 ```ruby
 {
