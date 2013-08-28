@@ -38,7 +38,7 @@ ElefundsFacade.new 1001, 'ay3456789gg234561234' do |api|
            receivers_available:  [1,2,3],
            grand_total:          900,
            suggested_amount:     100
-       }
+  }
 end
 ```
 
