@@ -42,7 +42,7 @@ ElefundsFacade.new 1001, 'ay3456789gg234561234' do |api|
 end
 ```
 
-> Receivers are returned as an array of hashes:
+Receivers are returned as an array of hashes:
 
 ```ruby
 [{"name" => "Beispiel 01",
@@ -62,7 +62,7 @@ end
 }]
 ```
 
-> Donations are expected as hashes, as well:
+Donations are expected as hashes, as well:
 
 ```ruby
 {
